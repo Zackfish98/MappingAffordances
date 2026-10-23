@@ -1,0 +1,12 @@
+# Raw downloads (large; re-download from source)
+Data_Input/
+
+# Intermediate / cached data
+cache/
+*.parquet
+*.gpkg
+*.gdb/
+
+# OS / Jupyter clutter
+.DS_Store
+.ipynb_checkpoints/
