@@ -1,0 +1,369 @@
+{
+ "areas": [
+  {
+   "key": "city",
+   "label": "City"
+  },
+  {
+   "key": "man",
+   "label": "Man"
+  },
+  {
+   "key": "bk",
+   "label": "Bklyn"
+  },
+  {
+   "key": "qns",
+   "label": "Qns"
+  },
+  {
+   "key": "bx",
+   "label": "Bx"
+  },
+  {
+   "key": "si",
+   "label": "S.I"
+  }
+ ],
+ "stages": {
+  "ParksOnly": null,
+  "WalkshedBeforeCalibration": "pre",
+  "WalkshedBeforeCalibrationWParkload": "pre",
+  "WalkshedAfterCalibration": "post",
+  "WalkshedWOpenStreetsWeekendOnly": "osWeekend",
+  "WalkshedsAllWeek": "osAllWeek"
+ },
+ "values": {
+  "pre": {
+   "city": {
+    "total": 95,
+    "dTotal": 0,
+    "elig": 96,
+    "dElig": 0,
+    "non": 94,
+    "dNon": 0
+   },
+   "man": {
+    "total": 98,
+    "dTotal": 0,
+    "elig": 97,
+    "dElig": 0,
+    "non": 98,
+    "dNon": 0
+   },
+   "bk": {
+    "total": 98,
+    "dTotal": 0,
+    "elig": 97,
+    "dElig": 0,
+    "non": 99,
+    "dNon": 0
+   },
+   "qns": {
+    "total": 94,
+    "dTotal": 0,
+    "elig": 96,
+    "dElig": 0,
+    "non": 92,
+    "dNon": 0
+   },
+   "bx": {
+    "total": 93,
+    "dTotal": 0,
+    "elig": 96,
+    "dElig": 0,
+    "non": 83,
+    "dNon": 0
+   },
+   "si": {
+    "total": 89,
+    "dTotal": 0,
+    "elig": 91,
+    "dElig": 0,
+    "non": 89,
+    "dNon": 0
+   }
+  },
+  "post": {
+   "city": {
+    "total": 47,
+    "dTotal": -50,
+    "elig": 43,
+    "dElig": -55,
+    "non": 53,
+    "dNon": -44
+   },
+   "man": {
+    "total": 59,
+    "dTotal": -40,
+    "elig": 77,
+    "dElig": -21,
+    "non": 50,
+    "dNon": -49
+   },
+   "bk": {
+    "total": 38,
+    "dTotal": -61,
+    "elig": 29,
+    "dElig": -70,
+    "non": 55,
+    "dNon": -45
+   },
+   "qns": {
+    "total": 41,
+    "dTotal": -56,
+    "elig": 38,
+    "dElig": -61,
+    "non": 45,
+    "dNon": -51
+   },
+   "bx": {
+    "total": 52,
+    "dTotal": -44,
+    "elig": 52,
+    "dElig": -46,
+    "non": 54,
+    "dNon": -35
+   },
+   "si": {
+    "total": 74,
+    "dTotal": -17,
+    "elig": 68,
+    "dElig": -25,
+    "non": 76,
+    "dNon": -15
+   }
+  },
+  "osWeekend": {
+   "city": {
+    "total": 48,
+    "dTotal": -50,
+    "elig": 43,
+    "dElig": -55,
+    "non": 53,
+    "dNon": -44
+   },
+   "man": {
+    "total": 60,
+    "dTotal": -39,
+    "elig": 77,
+    "dElig": -21,
+    "non": 51,
+    "dNon": -48
+   },
+   "bk": {
+    "total": 39,
+    "dTotal": -61,
+    "elig": 29,
+    "dElig": -70,
+    "non": 56,
+    "dNon": -44
+   },
+   "qns": {
+    "total": 42,
+    "dTotal": -56,
+    "elig": 38,
+    "dElig": -60,
+    "non": 46,
+    "dNon": -51
+   },
+   "bx": {
+    "total": 52,
+    "dTotal": -44,
+    "elig": 52,
+    "dElig": -46,
+    "non": 54,
+    "dNon": -35
+   },
+   "si": {
+    "total": 74,
+    "dTotal": -17,
+    "elig": 68,
+    "dElig": -25,
+    "non": 76,
+    "dNon": -14
+   }
+  },
+  "osAllWeek": {
+   "city": {
+    "total": 48,
+    "dTotal": -50,
+    "elig": 43,
+    "dElig": -55,
+    "non": 53,
+    "dNon": -44
+   },
+   "man": {
+    "total": 59,
+    "dTotal": -39,
+    "elig": 77,
+    "dElig": -21,
+    "non": 51,
+    "dNon": -48
+   },
+   "bk": {
+    "total": 38,
+    "dTotal": -61,
+    "elig": 29,
+    "dElig": -70,
+    "non": 55,
+    "dNon": -44
+   },
+   "qns": {
+    "total": 42,
+    "dTotal": -56,
+    "elig": 38,
+    "dElig": -60,
+    "non": 45,
+    "dNon": -51
+   },
+   "bx": {
+    "total": 52,
+    "dTotal": -44,
+    "elig": 52,
+    "dElig": -46,
+    "non": 54,
+    "dNon": -35
+   },
+   "si": {
+    "total": 74,
+    "dTotal": -17,
+    "elig": 68,
+    "dElig": -25,
+    "non": 76,
+    "dNon": -15
+   }
+  }
+ },
+ "exact": {
+  "pre": {
+   "city": {
+    "total": 95.495,
+    "elig": 96.323,
+    "non": 94.445
+   },
+   "man": {
+    "total": 97.624,
+    "elig": 97.342,
+    "non": 97.762
+   },
+   "bk": {
+    "total": 97.743,
+    "elig": 97.076,
+    "non": 98.972
+   },
+   "qns": {
+    "total": 94.074,
+    "elig": 95.913,
+    "non": 92.003
+   },
+   "bx": {
+    "total": 93.273,
+    "elig": 95.721,
+    "non": 82.597
+   },
+   "si": {
+    "total": 89.411,
+    "elig": 90.721,
+    "non": 89.011
+   }
+  },
+  "post": {
+   "city": {
+    "total": 47.276,
+    "elig": 43.002,
+    "non": 52.696
+   },
+   "man": {
+    "total": 58.748,
+    "elig": 76.632,
+    "non": 49.983
+   },
+   "bk": {
+    "total": 38.027,
+    "elig": 28.865,
+    "non": 54.905
+   },
+   "qns": {
+    "total": 41.274,
+    "elig": 37.597,
+    "non": 45.413
+   },
+   "bx": {
+    "total": 52.031,
+    "elig": 51.637,
+    "non": 53.753
+   },
+   "si": {
+    "total": 74.304,
+    "elig": 68.44,
+    "non": 76.095
+   }
+  },
+  "osWeekend": {
+   "city": {
+    "total": 47.77,
+    "elig": 43.403,
+    "non": 53.307
+   },
+   "man": {
+    "total": 59.685,
+    "elig": 76.979,
+    "non": 51.209
+   },
+   "bk": {
+    "total": 38.53,
+    "elig": 29.196,
+    "non": 55.725
+   },
+   "qns": {
+    "total": 41.689,
+    "elig": 38.279,
+    "non": 45.527
+   },
+   "bx": {
+    "total": 52.254,
+    "elig": 51.904,
+    "non": 53.779
+   },
+   "si": {
+    "total": 74.432,
+    "elig": 68.443,
+    "non": 76.261
+   }
+  },
+  "osAllWeek": {
+   "city": {
+    "total": 47.668,
+    "elig": 43.367,
+    "non": 53.122
+   },
+   "man": {
+    "total": 59.494,
+    "elig": 76.88,
+    "non": 50.972
+   },
+   "bk": {
+    "total": 38.404,
+    "elig": 29.181,
+    "non": 55.397
+   },
+   "qns": {
+    "total": 41.629,
+    "elig": 38.223,
+    "non": 45.461
+   },
+   "bx": {
+    "total": 52.239,
+    "elig": 51.886,
+    "non": 53.779
+   },
+   "si": {
+    "total": 74.305,
+    "elig": 68.443,
+    "non": 76.095
+   }
+  }
+ },
+ "definition": "% of residents with access within a 10-minute walk (stats.csv pct_residents_access); change = % change from before calibration (relative), as statistics_progression.ipynb"
+}

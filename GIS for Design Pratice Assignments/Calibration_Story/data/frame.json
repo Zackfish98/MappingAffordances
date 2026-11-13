@@ -1,0 +1,13 @@
+{
+ "width": 1400,
+ "height": 1388,
+ "ft_per_px": 114.55406813615018,
+ "origin": {
+  "x": 910090.9610205218,
+  "y": 275898.61229980923,
+  "corner": "top-left"
+ },
+ "crs": "EPSG:2263",
+ "units": "US feet",
+ "export_scale": 2
+}

@@ -1,0 +1,162 @@
+{
+ "calibration_matches_pipeline": {
+  "parks": {
+   "same_status": true,
+   "max_reach_gap_ft": 0.0
+  },
+  "places_week": {
+   "same_status": true,
+   "max_reach_gap_ft": 0.0
+  },
+  "places_weekend": {
+   "same_status": true,
+   "max_reach_gap_ft": 0.0
+  }
+ },
+ "final_load_gap_per_1000sqft": {
+  "parks": 3.552713678800501e-15,
+  "places_weekend": 3.552713678800501e-15,
+  "places_all_week": 3.552713678800501e-15
+ },
+ "footprint_vs_static": {
+  "WalkshedBeforeCalibration": {
+   "static_layer": "display_full_before",
+   "pixels_static": 481058,
+   "pixels_engine": 481058,
+   "mismatched": 0
+  },
+  "WalkshedAfterCalibration": {
+   "static_layer": "display_parks",
+   "pixels_static": 301072,
+   "pixels_engine": 301080,
+   "mismatched": 10
+  },
+  "WalkshedWOpenStreetsWeekendOnly": {
+   "static_layer": "display_places_weekend",
+   "pixels_static": 303598,
+   "pixels_engine": 303608,
+   "mismatched": 12
+  }
+ },
+ "residue": {
+  "pixels": 179978,
+  "equals_stage2_minus_stage3": true,
+  "mismatched_vs_static_lost": 10
+ },
+ "residue_spot_check": [
+  {
+   "park_id": "B065",
+   "name": "Ocean Parkway Malls",
+   "pixels_cut_by_calibration": 10965,
+   "in_residue": 7031,
+   "still_covered_by_another_site": 3934,
+   "consistent": true
+  },
+  {
+   "park_id": "Q035",
+   "name": "Mall Thirty Four XXXIV",
+   "pixels_cut_by_calibration": 4509,
+   "in_residue": 3659,
+   "still_covered_by_another_site": 850,
+   "consistent": true
+  },
+  {
+   "park_id": "M096",
+   "name": "Adam Clayton Powell Jr. Malls",
+   "pixels_cut_by_calibration": 4308,
+   "in_residue": 674,
+   "still_covered_by_another_site": 3634,
+   "consistent": true
+  }
+ ],
+ "stages_4_5": {
+  "WalkshedWOpenStreetsWeekendOnly": {
+   "open_streets_active": 56,
+   "open_streets_with_fields": 56,
+   "plazas_active": 93,
+   "parks_reaching_further_than_stage_3": 174,
+   "top5_reach_gain": [
+    {
+     "park_id": "B551",
+     "name": "Vinegar Hill Community Garden",
+     "stage3_ft": 406,
+     "this_stage_ft": 2049,
+     "gain_ft": 1642
+    },
+    {
+     "park_id": "M021",
+     "name": "A Philip Randolph Square",
+     "stage3_ft": 2134,
+     "this_stage_ft": 3018,
+     "gain_ft": 884
+    },
+    {
+     "park_id": "B536",
+     "name": "North 5th Street Pier and Park",
+     "stage3_ft": 2327,
+     "this_stage_ft": 3165,
+     "gain_ft": 837
+    },
+    {
+     "park_id": "M056",
+     "name": "Morningside Park",
+     "stage3_ft": 2621,
+     "this_stage_ft": 3368,
+     "gain_ft": 747
+    },
+    {
+     "park_id": "M093",
+     "name": "Father Duffy Square",
+     "stage3_ft": -3,
+     "this_stage_ft": 723,
+     "gain_ft": 726
+    }
+   ],
+   "parks_pulsing_on_landing": 24
+  },
+  "WalkshedsAllWeek": {
+   "open_streets_active": 24,
+   "open_streets_with_fields": 24,
+   "plazas_active": 93,
+   "parks_reaching_further_than_stage_3": 155,
+   "top5_reach_gain": [
+    {
+     "park_id": "B551",
+     "name": "Vinegar Hill Community Garden",
+     "stage3_ft": 406,
+     "this_stage_ft": 2049,
+     "gain_ft": 1642
+    },
+    {
+     "park_id": "M021",
+     "name": "A Philip Randolph Square",
+     "stage3_ft": 2134,
+     "this_stage_ft": 3018,
+     "gain_ft": 884
+    },
+    {
+     "park_id": "B536",
+     "name": "North 5th Street Pier and Park",
+     "stage3_ft": 2327,
+     "this_stage_ft": 3165,
+     "gain_ft": 837
+    },
+    {
+     "park_id": "M093",
+     "name": "Father Duffy Square",
+     "stage3_ft": -3,
+     "this_stage_ft": 723,
+     "gain_ft": 726
+    },
+    {
+     "park_id": "B223IC",
+     "name": "Park",
+     "stage3_ft": 1187,
+     "this_stage_ft": 1760,
+     "gain_ft": 573
+    }
+   ],
+   "parks_pulsing_on_landing": 23
+  }
+ }
+}

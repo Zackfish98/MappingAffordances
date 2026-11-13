@@ -1,0 +1,55 @@
+/* "Residents with access" table (from access-table-story.html): the InDesign table, 175pt label column, six
+   112pt borough columns, 0.75pt outer / 0.25pt inner rules. Colours and sizes come from core.json "table"
+   (table.js sets the CSS variables). Motion is not done with CSS transitions: table.js sets the moving
+   properties (clip, heights, opacities, rule widths, numbers) from the story clock each frame, so the video
+   export captures it frame by frame. */
+.access-table {
+  --pt: 1.3333px; --scale: 1; --u: calc(var(--pt) * var(--scale));
+  --rule-outer: max(1px, calc(var(--rule-outer-pt) * var(--u)));
+  --rule-inner: max(0.5px, calc(var(--rule-inner-pt) * var(--u)));
+  --size-data: calc(var(--fs) * var(--u));
+  --w-lab: calc(var(--lab-pt) * var(--u)); --w-col: calc(var(--col-pt) * var(--u));
+  --h-head: calc(var(--head-pt) * var(--u)); --h-row: calc(var(--row-pt) * var(--u));
+  color: var(--ink);
+}
+.access-table .screen { width: max-content; position: relative; clip-path: inset(50% 50% 50% 50%); }
+.access-table .scanline { position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px; background: var(--ink);
+                          opacity: 0; pointer-events: none; }
+.access-table h1 { font: 400 calc(var(--title-pt) * var(--u))/1 var(--font-title); text-transform: uppercase; color: var(--title);
+                   margin: 0 0 calc(4 * var(--u)) var(--w-lab); width: calc(6 * var(--w-col)); text-align: center; letter-spacing: 0; }
+
+.acc { font-family: var(--font-data); font-size: var(--size-data); line-height: 1; font-variant-numeric: tabular-nums; color: var(--ink); }
+.acc .r { display: flex; }
+/* fixed columns in every row: a cell never grows to fit its text (wide fallback type overflows instead of shifting the row) */
+.acc .lab, .acc .c { min-width: 0; }
+.acc .lab { flex: 0 0 var(--w-lab); box-sizing: border-box; padding-right: calc(4 * var(--u)); display: flex; align-items: center;
+            justify-content: flex-end; white-space: nowrap; }
+.acc .c { flex: 0 0 var(--w-col); box-sizing: border-box; display: flex; align-items: center; justify-content: center; white-space: nowrap; }
+.acc .head { height: var(--h-head); }
+.acc .head .c { align-items: flex-end; padding-bottom: calc(4 * var(--u)); }
+.acc .box { height: var(--h-row); box-sizing: border-box; }
+.acc .box .c { border: 0 solid var(--ink); border-left-width: var(--rule-inner); }
+.acc .box .lab + .c { border-left-width: var(--rule-outer); }
+.acc .box .c:last-child { border-right-width: var(--rule-outer); }
+
+.acc .grow, .acc .delta { height: 0; overflow: hidden; }
+.acc .delta .r { height: var(--h-row); }
+.acc .delta .c + .c { border-left: var(--rule-inner) solid var(--ink); }
+/* the boxes' outer rules on their first and last column take width from those cells; the change rows carry the same
+   widths as transparent rules, so every column centres its content at the same x in every row */
+.acc .delta .lab + .c { border-left: var(--rule-outer) solid transparent; }
+.acc .delta .c:last-child { border-right: var(--rule-outer) solid transparent; }
+
+.access-table .num { position: relative; display: inline-flex; justify-content: space-between; box-sizing: content-box; }
+.access-table .num.t .pc { margin-right: .3em; }
+.access-table .arr { position: absolute; top: 50%; transform: translateY(-50%); font-size: .8em; line-height: 1; }
+.access-table .arr.r-side { left: 100%; margin-left: .45em; }
+.access-table .arr.l-side { right: 100%; margin-right: .45em; }
+.access-table .split { display: grid; grid-template-columns: 1fr auto 1fr; column-gap: .35em; width: 100%; align-items: center; }
+.access-table .split > :first-child { justify-self: end; }
+.access-table .split > :last-child { justify-self: start; }
+.access-table .elig { color: var(--eligible); }
+.access-table .sep { color: var(--separator); }
+.access-table .up { color: var(--increase); }
+.access-table .down { color: var(--decrease); }
+.access-table .flat { color: var(--ink); opacity: .5; }

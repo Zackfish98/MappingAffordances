@@ -1,0 +1,141 @@
+{
+  "color": {
+    "walkshed": "#74a3c9",
+    "walkshedFront": "#4f86b8",
+    "residueDot": "#74a3c9",
+    "residueGround": "#cfdeea",
+    "parkDefault": "#fde2e4",
+    "parkLoad": {
+      "under_half": "#fde2e4",
+      "at_or_under": "#f4b8c1",
+      "1_2x": "#be4bb1",
+      "2_4x": "#cc2070",
+      "over_4x": "#c60014"
+    },
+    "parkOutline": "#3f286d",
+    "parkHalo": "#ffffff",
+    "openStreet": "#ffc21a",
+    "openStreetCasing": "#3f286d",
+    "street": "#e9e6ec",
+    "outline": "#cfc9d4",
+    "background": "#ffffff"
+  },
+  "load": {
+    "standard": 15.30456,
+    "classMultiples": [
+      0.5,
+      1,
+      2,
+      4
+    ],
+    "unit": "people per 1,000 sq ft"
+  },
+  "walk": {
+    "fullMinutes": 10,
+    "fieldMarginMinutes": 1.5,
+    "ftPerMin": 264
+  },
+  "frame": {
+    "widthPx": 1400,
+    "exportScale": 2
+  },
+  "table": {
+    "ink": "#000000",
+    "title": "#231f20",
+    "eligible": "#de871f",
+    "separator": "#74a3c9",
+    "increase": "#5da260",
+    "decrease": "#d24c4c",
+    "fontTitle": "Archivo",
+    "fontData": [
+      "Fuuld",
+      "Silkscreen"
+    ],
+    "labelColPt": 175,
+    "boroughColPt": 112,
+    "headRowPt": 17.872,
+    "rowPt": 21.6,
+    "ruleOuterPt": 0.75,
+    "ruleInnerPt": 0.25,
+    "titlePt": 26,
+    "dataPt": 14,
+    "dataPtFallback": 10.5
+  },
+  "behavior": {
+    "order": [
+      "recreation",
+      "play",
+      "gathering",
+      "rest"
+    ],
+    "color": {
+      "recreation": "#06d3ff",
+      "play": "#bf37fd",
+      "gathering": "#74e423",
+      "rest": "#00009d"
+    },
+    "gradeScore": {
+      "A": 1.0,
+      "B": 0.5,
+      "C": 0.25,
+      "D": 0.0,
+      "none": 0.0
+    },
+    "hueGrades": [
+      "A",
+      "B"
+    ],
+    "lackGrades": [
+      "C",
+      "D",
+      "none"
+    ],
+    "zoomDots": {
+      "pitchPx": 14,
+      "offsetPx": 2.1,
+      "radiusPx": 1.6,
+      "spots": {
+        "rest": [
+          [
+            -0.25,
+            -0.25
+          ],
+          [
+            -1,
+            -1
+          ]
+        ],
+        "play": [
+          [
+            0.25,
+            -0.25
+          ],
+          [
+            1,
+            -1
+          ]
+        ],
+        "recreation": [
+          [
+            0.0,
+            0.25
+          ],
+          [
+            -1,
+            1
+          ]
+        ],
+        "gathering": [
+          [
+            0.5,
+            0.25
+          ],
+          [
+            1,
+            1
+          ]
+        ]
+      }
+    }
+  }
+}

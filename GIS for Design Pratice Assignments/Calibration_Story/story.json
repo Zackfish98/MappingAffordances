@@ -1,0 +1,72 @@
+{
+  "steps": [
+    {
+      "stage": "ParksOnly",
+      "enter": "cut",
+      "holdSec": 1.5
+    },
+    {
+      "stage": "WalkshedBeforeCalibration",
+      "enter": "spread",
+      "holdSec": 0
+    },
+    {
+      "stage": "WalkshedBeforeCalibrationWParkload",
+      "enter": "revealParkLoad",
+      "holdSec": 2.0
+    },
+    {
+      "stage": "WalkshedAfterCalibration",
+      "enter": "spread",
+      "residue": "draw",
+      "holdSec": 3.0
+    },
+    {
+      "stage": "WalkshedWOpenStreetsWeekendOnly",
+      "enter": "spread",
+      "reveal": "openStreets:weekend",
+      "holdSec": 3.0
+    },
+    {
+      "stage": "WalkshedsAllWeek",
+      "enter": "spread",
+      "reveal": "openStreets:allweek",
+      "holdSec": 3.0
+    }
+  ],
+  "overlay": {
+    "_note": "boxes on the map, in grid px of data/frame.json (x, y, width, height): the table is scaled to fit its box and centred in it",
+    "table": [
+      469,
+      1210,
+      833,
+      116
+    ],
+    "legend": [
+      1096,
+      1103,
+      203,
+      93
+    ]
+  },
+  "callouts": {
+    "_note": "the three zoomed panels on the page (not in the video): square boxes on the map in grid px of data/frame.json (x, y, size), top to bottom",
+    "boxes": [
+      [
+        760,
+        240,
+        120
+      ],
+      [
+        605,
+        600,
+        120
+      ],
+      [
+        660,
+        780,
+        120
+      ]
+    ]
+  }
+}

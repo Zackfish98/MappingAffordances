@@ -1,0 +1,56 @@
+{
+  "spread": {
+    "rateMinPerSec": 1.667,
+    "rough": 0.35,
+    "grain": 4,
+    "body": 0.8,
+    "frontWidth": 0.8,
+    "frontOpacity": 1,
+    "settleMin": 2,
+    "noise": {
+      "octaves": 4,
+      "gain": 0.55,
+      "lacunarity": 2.1,
+      "shape": 0.7
+    }
+  },
+  "pulse": {
+    "durationSec": 0.7,
+    "growPx": 14,
+    "strokeStartPx": 2.5,
+    "strokeEndPx": 0.5
+  },
+  "loadReveal": {
+    "introSec": 0.8,
+    "climbTotalSec": 2
+  },
+  "residue": {
+    "dotSize": 1.3,
+    "dotSpacing": 7,
+    "fadeInMin": 0.6,
+    "groundAlpha": 0.784
+  },
+  "reveal": {
+    "openStreetsSec": 0.6,
+    "beatSec": 0.6
+  },
+  "playback": {
+    "speed": 0.6
+  },
+  "table": {
+    "switchOnLineSec": 0.26,
+    "switchOnOpenSec": 0.34,
+    "beatBeforeCdbgSec": 1.1,
+    "rowOpenSec": 0.42,
+    "textFadeSec": 0.32,
+    "tickSec": 0.52
+  },
+  "merge": {
+    "sweepSec": 2.2,
+    "holdSec": 1.2,
+    "bandPx": 70,
+    "growPxPerSec": 120,
+    "growCapSec": 2.5,
+    "endOnWalkshedBlue": true
+  }
+}

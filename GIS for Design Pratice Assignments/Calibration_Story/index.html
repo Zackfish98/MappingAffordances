@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calibration Story</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400&family=Silkscreen&display=swap">
+<link rel="stylesheet" href="table/table.css">
+<style>
+  :root { --bg:#f6f4f7; --panel:#ffffff; --ink:#231d2c; --muted:#6d6577; --line:#e2dde6; --accent:#3f286d; --accent-ink:#ffffff;
+          --sans: system-ui, -apple-system, "Segoe UI", sans-serif; --mono: ui-monospace, Menlo, Consolas, monospace; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 var(--sans); padding: 20px 16px 32px; }
+  .wrap { display: grid; grid-template-columns: 240px minmax(0, auto) 320px; gap: 16px; align-items: start; justify-content: center; position: relative; }
+  @media (max-width: 1100px) { .wrap { grid-template-columns: minmax(0, 1fr); } }
+  /* callouts: three zoomed panels of the live map, each tied by a leader line to its box on the map (page only, not in the video) */
+  .callouts { display: flex; flex-direction: column; justify-content: space-between; gap: 12px; align-self: stretch; padding: 10px 0 34px; }
+  .callout { position: relative; background: #ffffff; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .callout canvas { width: 100%; aspect-ratio: 1; }
+  .callout .n { position: absolute; left: 6px; top: 6px; font: 600 11px var(--mono); color: var(--accent-ink); background: var(--accent); border-radius: 3px; padding: 1px 6px; }
+  @media (max-width: 1100px) { .callouts { flex-direction: row; padding: 0; } .callout { flex: 1 1 0; } #leaders { display: none; } }
+  #leaders { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; z-index: 2; }
+  #picks { position: absolute; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; }
+  #picks .box { fill: transparent; stroke: var(--accent); stroke-width: 2; pointer-events: all; cursor: move; }
+  #picks .handle { fill: var(--accent); pointer-events: all; cursor: nwse-resize; }
+  #picks text { font: 600 13px var(--mono); fill: var(--accent); pointer-events: none; }
+  /* the frame is the map, with the table and the legend laid over it (boxes in story.json "overlay"); the video records it */
+  #frame { background: #ffffff; border: 1px solid var(--line); border-radius: 12px; padding: 10px; min-width: 0; }
+  .stage { min-width: 0; position: relative; }
+  #table, #legend { position: absolute; left: 0; top: 0; }
+  /* legend: the same type as the table title */
+  #legend { display: flex; flex-direction: column; justify-content: center; gap: .45em; color: var(--legend-ink, #231f20);
+            font: 400 calc(var(--legend-px, 10px)) / 1 var(--legend-font, "Archivo", "Helvetica Neue", Arial, sans-serif);
+            text-transform: uppercase; letter-spacing: .02em; }
+  #legend .item { display: grid; grid-template-columns: 4.8em auto; align-items: center; white-space: nowrap; } /* swatches in one column, labels aligned */
+  #legend .item[hidden] { display: none; }
+  #legend .sw { flex: 0 0 auto; width: 1.6em; height: 1em; border-radius: 1px; box-sizing: border-box; }
+  #legend .scale { display: flex; flex: 0 0 auto; }
+  #legend .scale span { width: .8em; height: 1em; }
+  canvas { display: block; max-width: 100%; height: auto; }
+  .bar { display: flex; justify-content: space-between; gap: 12px; padding: 8px 4px 2px; font: 12px var(--mono); color: #4b4455; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .panel h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 6px 0 0; font-weight: 600; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px; }
+  button { font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
+  button:hover { border-color: var(--muted); }
+  button.primary, button[aria-current="step"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  ol { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 4px; }
+  ol button { width: 100%; text-align: left; font: 12px var(--mono); }
+  pre { margin: 0; font: 11px var(--mono); background: var(--bg); border-radius: 6px; padding: 8px; white-space: pre-wrap; max-height: 160px; overflow: auto; }
+  .hint { margin: 0; font-size: 12px; color: var(--muted); }
+  #loading { font: 13px var(--mono); color: var(--muted); padding: 8px 4px; }
+  body.render { padding: 0; background: #ffffff; }
+  body.render .panel, body.render .bar, body.render #loading, body.render .callouts, body.render #leaders, body.render #picks { display: none; }
+  body.render .wrap { display: block; }
+  body.render .stage { border: 0; border-radius: 0; padding: 0; }
+  body.render #frame { display: inline-block; border: 0; border-radius: 0; padding: 0; }
+  body.render canvas { max-width: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <svg id="leaders" aria-hidden="true"></svg>
+  <div class="callouts" id="callouts" aria-label="Zoomed views of three places on the map"></div>
+  <div>
+    <div id="frame">
+      <div class="stage">
+        <div id="table" aria-label="Residents with access, by borough, for the current stage"></div>
+        <div id="legend" aria-label="Map legend"></div>
+        <div id="loading">Loading…</div>
+        <canvas id="cv" aria-label="Animated map of New York City park walksheds before and after calibration"></canvas>
+      </div>
+    </div>
+    <div class="bar"><span id="stageName">–</span><span id="phase">–</span></div>
+  </div>
+  <div class="panel">
+    <h2>Playback</h2>
+    <div class="row">
+      <button id="play" class="primary" type="button">Pause</button>
+      <button id="back" type="button">Step back</button>
+      <button id="fwd" type="button">Step forward</button>
+      <button id="replay" type="button">Replay</button>
+    </div>
+    <h2>Steps</h2>
+    <ol id="steps"></ol>
+    <h2>Callouts</h2>
+    <p class="hint">Drag a numbered box on the map to move it; drag its corner to resize.</p>
+    <div class="row"><button id="copyBoxes" type="button">Copy boxes</button><button id="resetBoxes" type="button">Reset boxes</button></div>
+    <pre id="boxes" hidden></pre>
+  </div>
+</div>
+
+<script type="module">
+import { loadFields, Field } from "./engine/field.js";
+import { Spread } from "./engine/spread.js";
+import { ParkLayer, PlaceLayer } from "./engine/reveal.js";
+import { Timeline } from "./engine/timeline.js";
+import { AccessTable } from "./table/table.js";
+import { Zoom } from "./engine/zoom.js";
+
+const RENDER = new URLSearchParams(location.search).has("render");
+if (RENDER) document.body.classList.add("render");
+const $ = (id) => document.getElementById(id);
+const json = (p) => fetch(p).then((r) => { if (!r.ok) throw new Error(p); return r.json(); });
+const image = (p) => new Promise((ok, bad) => { const im = new Image(); im.onload = () => ok(im); im.onerror = () => bad(new Error(p)); im.src = p; });
+
+async function boot() {
+  const [core, motion, story, frame, parks, places, index, accessData] = await Promise.all([
+    json("Animation_Token/core.json"), json("Animation_Token/motion.json"), json("story.json"),
+    json("data/frame.json"), json("data/parks.json"), json("data/openstreets.json"), json("data/fields/index.json"),
+    json("data/access_table.json")]);
+  const stageIds = [...new Set(story.steps.map((s) => s.stage))];
+  const stageDocs = await Promise.all(stageIds.map((id) => json(`data/stages/${id}.json`)));
+  const stages = Object.fromEntries(stageIds.map((id, i) => [id, stageDocs[i]]));
+  const [base, residueBuf, fields] = await Promise.all([
+    image("data/base.png"), fetch("data/residue.bin").then((r) => r.arrayBuffer()),
+    loadFields("data/fields/", index, (d, n) => { $("loading").textContent = `Loading walking-time fields ${d} / ${n}`; })]);
+
+  const W = frame.width, H = frame.height;
+  const ids = stages[story.steps[0].stage].sources.map((r) => r.id);
+  const field = new Field(frame, fields, ids);
+  const spread = new Spread(field, core, motion);
+  spread.setResidue(new Int32Array(residueBuf));
+  const sourceIndex = new Map(ids.map((id, i) => [id, i]));
+  const sourceOf = (id) => (sourceIndex.has(id) ? sourceIndex.get(id) : -1);
+  const parkLayer = new ParkLayer(parks.parks, sourceOf, core, motion, W, H);
+  const placeLayer = new PlaceLayer(places.places, sourceOf, core, W, H);
+  const tl = new Timeline({ story, stages, field, spread, parks: parkLayer, places: placeLayer, core, motion });
+
+  // Canvas: grid size in CSS px, drawn at devicePixelRatio; the walking-time math stays in grid pixels
+  const cv = $("cv"), ctx = cv.getContext("2d");
+  const dpr = window.devicePixelRatio || 1;
+  cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+  cv.style.width = W + "px";
+  const off = document.createElement("canvas"); off.width = W; off.height = H;
+  const octx = off.getContext("2d");
+  const img = octx.createImageData(W, H);
+  $("loading").remove();
+
+  // The table follows the same timeline steps: stepping forward one step animates, anything else snaps
+  const table = new AccessTable($("table"), accessData, core, motion);
+  let lastK = -1, lastSeek = -1;
+  function syncTable() {
+    if (tl.k !== lastK || tl.seeks !== lastSeek) {
+      table.setStage(story.steps[tl.k].stage, tl.k === lastK + 1, tl.clock); // next step (played or Step forward) animates
+      lastK = tl.k; lastSeek = tl.seeks;
+    }
+    table.update(tl.clock);
+  }
+  const fontsReady = document.fonts.ready.then(() => Promise.all(
+    [`10px "${core.table.fontData[1]}"`, `10px "${core.table.fontTitle}"`].map((f) => document.fonts.load(f).catch(() => null))))
+    .then(() => table.align());
+  document.fonts.addEventListener("loadingdone", () => table.align());
+
+  // Table and legend laid over the map: story.json "overlay" boxes (grid px), scaled with the map as drawn
+  const OV = story.overlay, TT = core.table, C = core.color;
+  const natW = (TT.labelColPt + 6 * TT.boroughColPt) * 1.3333;                 // the table at scale 1, CSS px
+  const natH = (TT.titlePt + 4 + TT.headRowPt + 4 * TT.rowPt) * 1.3333;        // title, header and all four rows
+  const legend = $("legend");
+  legend.style.setProperty("--legend-font", `"${TT.fontTitle}", "Helvetica Neue", Arial, sans-serif`);
+  legend.style.setProperty("--legend-ink", TT.title);
+  const rgba = (h, a) => `rgba(${[1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)).join(",")},${a})`;
+  const scaleKeys = ["under_half", "at_or_under", "1_2x", "2_4x", "over_4x"];
+  legend.innerHTML =
+    `<div class="item" data-k="walkshed"><span class="sw" style="background:${rgba(C.walkshed, motion.spread.body)}"></span>Walkshed</div>` +
+    `<div class="item" data-k="lost"><span class="sw" style="background:${rgba(C.residueGround, motion.residue.groundAlpha)} radial-gradient(${C.residueDot} 28%, transparent 34%) 0 0 / .5em .5em"></span>Lost to calibration</div>` +
+    `<div class="item" data-k="parks"><span class="sw" style="background:${C.parkDefault};border:1px solid ${C.parkOutline}"></span>Parks</div>` +
+    `<div class="item" data-k="load"><span class="scale">${scaleKeys.map((k) => `<span style="background:${C.parkLoad[k]}"></span>`).join("")}</span>Park load ½× – 4×+</div>` +
+    `<div class="item" data-k="places"><span class="sw" style="background:${C.openStreet};border:1.5px solid ${C.openStreetCasing}"></span>Plazas &amp; Open Streets</div>`;
+  const items = Object.fromEntries([...legend.querySelectorAll(".item")].map((el) => [el.dataset.k, el]));
+  function updateLegend() { // each entry from the stage its layer appears in
+    let walk = false, places = false;
+    for (let s = 0; s < tl.nS && !(walk && places); s++) { if (tl.rt[s] > 0) walk = true; if (tl.placeOn[s]) places = true; }
+    const show = { walkshed: walk, lost: tl.residueOn, parks: !tl.revealed, load: tl.revealed, places };
+    for (const [k, el] of Object.entries(items)) if (el.hidden === show[k]) el.hidden = !show[k];
+  }
+  function placeOverlays() {
+    const k = cv.getBoundingClientRect().width / W; // CSS px per grid px
+    const [tx, ty, tw, th] = OV.table, s = Math.min((tw * k) / natW, (th * k) / natH);
+    table.setScale(s);
+    Object.assign($("table").style, { left: `${tx * k + (tw * k - natW * s) / 2}px`, top: `${ty * k}px` });
+    const [lx, ly, lw, lh] = OV.legend;
+    Object.assign(legend.style, { left: `${lx * k}px`, top: `${ly * k}px`, width: `${lw * k}px`, height: `${lh * k}px` });
+    legend.style.setProperty("--legend-px", `${Math.min((lh * k) / 6.2, (lw * k) / 16)}px`); // four entries fill the box; the longest fits its width
+  }
+  placeOverlays();
+  fontsReady.then(placeOverlays);
+  window.addEventListener("resize", () => { placeOverlays(); table.align(); placeLeaders(); });
+
+  // Callouts (page only): three zoomed panels left of the map, drawn at their own resolution each frame (zoom.js); their boxes
+  // (story.json "callouts", grid px) can be dragged on the map and are remembered in this browser until reset
+  const SVG = "http://www.w3.org/2000/svg", KEY = "cs-callouts";
+  const BOX_MIN = 30, BOX_MAX = 500;
+  const clampBox = ([x, y, z]) => { z = Math.max(BOX_MIN, Math.min(BOX_MAX, z)); return [Math.max(0, Math.min(W - z, x)), Math.max(0, Math.min(H - z, y)), z].map(Math.round); };
+  let boxes = story.callouts.boxes.map(clampBox);
+  try { const saved = JSON.parse(localStorage.getItem(KEY)); if (Array.isArray(saved) && saved.length === 3) boxes = saved.map(clampBox); } catch (e) { /* no storage: defaults */ }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(boxes)); } catch (e) { /* not remembered */ } };
+  const panels = RENDER ? [] : boxes.map((_, i) => {
+    const el = document.createElement("div"); el.className = "callout";
+    el.innerHTML = `<canvas width="480" height="480" aria-label="Zoomed view ${i + 1}"></canvas><span class="n">${i + 1}</span>`;
+    $("callouts").appendChild(el);
+    const base = document.createElement("canvas"), shed = document.createElement("canvas");
+    return { el, cv: el.querySelector("canvas"), ctx: el.querySelector("canvas").getContext("2d"), base, shed, baseKey: "", nzKey: "", nz: null };
+  });
+  const zoom = new Zoom(field, spread, core, motion);
+  if (!RENDER) json("data/base_vec.json").then((v) => { zoom.setBase(v); panels.forEach((p) => { p.baseKey = ""; }); drawCallouts(); }).catch((e) => console.warn("base_vec.json:", e.message));
+  const picks = document.createElementNS(SVG, "svg");
+  picks.id = "picks"; picks.setAttribute("viewBox", `0 0 ${W} ${H}`); picks.setAttribute("preserveAspectRatio", "none");
+  cv.after(picks);
+  const marks = boxes.map((_, i) => {
+    const g = document.createElementNS(SVG, "g"), r = document.createElementNS(SVG, "rect"), h = document.createElementNS(SVG, "rect"), t = document.createElementNS(SVG, "text");
+    r.setAttribute("class", "box"); h.setAttribute("class", "handle"); r.setAttribute("vector-effect", "non-scaling-stroke");
+    t.textContent = i + 1; g.append(r, h, t); picks.appendChild(g);
+    return { r, h, t };
+  });
+  function placeBoxes() {
+    const k = W / Math.max(1, cv.getBoundingClientRect().width); // grid px per CSS px, to keep the handle and label a fixed size
+    boxes.forEach(([x, y, z], i) => {
+      const m = marks[i], hs = 10 * k;
+      Object.entries({ x, y, width: z, height: z }).forEach(([a, v]) => m.r.setAttribute(a, v));
+      Object.entries({ x: x + z - hs / 2, y: y + z - hs / 2, width: hs, height: hs }).forEach(([a, v]) => m.h.setAttribute(a, v));
+      m.t.setAttribute("x", x + 4 * k); m.t.setAttribute("y", y - 4 * k); m.t.style.fontSize = `${13 * k}px`;
+    });
+  }
+  function placeLeaders() { // from each box's left edge to its panel's right edge, in .wrap px
+    placeBoxes();
+    for (const p of panels) { // the panel canvases at device resolution
+      const n = Math.max(64, Math.round(p.el.getBoundingClientRect().width * (window.devicePixelRatio || 1)));
+      if (!p.img || p.cv.width !== n) { p.cv.width = p.cv.height = p.base.width = p.base.height = p.shed.width = p.shed.height = n; p.img = p.shed.getContext("2d").createImageData(n, n); p.baseKey = ""; }
+    }
+    const L = $("leaders"), w = L.getBoundingClientRect(), c = cv.getBoundingClientRect(), k = c.width / W;
+    L.innerHTML = panels.map((p, i) => {
+      const r = p.el.getBoundingClientRect(), [x, y, z] = boxes[i];
+      const x1 = r.right - w.left, y1 = r.top + r.height / 2 - w.top, x2 = c.left + x * k - w.left, y2 = c.top + (y + z / 2) * k - w.top;
+      return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#3f286d" stroke-width="1.2"/><circle cx="${x2}" cy="${y2}" r="2.5" fill="#3f286d"/>`;
+    }).join("");
+  }
+  function drawCallouts() { // the same layers in the same order as render(), in each panel's view
+    const pd = window.devicePixelRatio || 1, st = { amp: tl.amp, settle: tl.settle, expanding: tl.expanding, residueOn: tl.residueOn };
+    panels.forEach((p, i) => {
+      if (!p.img) return;
+      const v = zoom.view(boxes[i], p.cv.width, pd), key = boxes[i].join(","), c = p.ctx;
+      if (p.baseKey !== key) { zoom.drawBase(p.base.getContext("2d"), v, base); p.baseKey = key; }
+      const nzKey = `${key},${v.n},${motion.spread.grain}`;
+      if (p.nzKey !== nzKey) { p.nz = zoom.noise(v); p.nzKey = nzKey; }
+      zoom.renderWalkshed(p.img, v, st, p.nz);
+      p.shed.getContext("2d").putImageData(p.img, 0, 0); zoom.clipLand(p.shed.getContext("2d"), v);
+      c.setTransform(1, 0, 0, 1, 0, 0);
+      c.drawImage(p.base, 0, 0); c.drawImage(p.shed, 0, 0);
+      placeLayer.paint(c, [v.s, v.ox, v.oy], v.lw, tl.clock);
+      parkLayer.paint(c, [v.s, v.ox, v.oy], v.lw, tl.coord, tl.intro, tl.revealed);
+      parkLayer.drawPulses(c, v.s, tl.clock, v.ox, v.oy, v.lw);
+    });
+  }
+  marks.forEach((m, i) => {
+    const drag = (resize) => (e) => {
+      e.preventDefault(); e.stopPropagation();
+      const k = W / cv.getBoundingClientRect().width, x0 = e.clientX, y0 = e.clientY, b0 = boxes[i].slice();
+      const move = (ev) => {
+        const dx = (ev.clientX - x0) * k, dy = (ev.clientY - y0) * k;
+        boxes[i] = clampBox(resize ? [b0[0], b0[1], b0[2] + Math.max(dx, dy)] : [b0[0] + dx, b0[1] + dy, b0[2]]);
+        placeLeaders(); drawCallouts();
+      };
+      const up = () => { removeEventListener("pointermove", move); removeEventListener("pointerup", up); save(); };
+      addEventListener("pointermove", move); addEventListener("pointerup", up);
+    };
+    m.r.addEventListener("pointerdown", drag(false)); m.h.addEventListener("pointerdown", drag(true));
+  });
+  if (!RENDER) {
+    placeLeaders();
+    fontsReady.then(placeLeaders);
+    new ResizeObserver(placeLeaders).observe($("frame"));
+    $("copyBoxes").addEventListener("click", async () => {
+      const text = JSON.stringify(boxes);
+      $("boxes").hidden = false; $("boxes").textContent = text;
+      try { await navigator.clipboard.writeText(text); $("copyBoxes").textContent = "Copied"; } catch (e) { $("copyBoxes").textContent = "Shown below"; }
+      setTimeout(() => { $("copyBoxes").textContent = "Copy boxes"; }, 1500);
+    });
+    $("resetBoxes").addEventListener("click", () => {
+      boxes = story.callouts.boxes.map(clampBox); try { localStorage.removeItem(KEY); } catch (e) { /* nothing stored */ }
+      placeLeaders(); drawCallouts();
+    });
+  }
+
+  function render() {
+    if (tl.dirty) { field.recompute(tl.rt, tl.rd); tl.dirty = false; }
+    spread.render(img, { amp: tl.amp, settle: tl.settle, expanding: tl.expanding, residueOn: tl.residueOn });
+    octx.putImageData(img, 0, 0);
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillStyle = core.color.background; ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(base, 0, 0, cv.width, cv.height);
+    ctx.drawImage(off, 0, 0, cv.width, cv.height);
+    placeLayer.draw(dpr, tl.clock); ctx.drawImage(placeLayer.canvas, 0, 0);
+    parkLayer.draw(dpr, tl.coord, tl.intro, tl.revealed); ctx.drawImage(parkLayer.canvas, 0, 0);
+    parkLayer.drawPulses(ctx, dpr, tl.clock);
+    syncTable();
+    updateLegend();
+    drawCallouts();
+  }
+
+  tl.seek(0);
+
+  if (RENDER) { // driven by scripts/render_video.js with a virtual clock
+    await fontsReady;
+    render();
+    window.CS = {
+      steps: story.steps.length,
+      names: story.steps.map((s, i) => `${String(i).padStart(2, "0")}_${s.stage}`), fullName: "full_story",
+      seek(k) { tl.seek(k); render(); return tl.status(); },
+      frame(dt) { tl.advance(dt); render(); return tl.status(); },
+      status: () => tl.status(),
+      png: () => cv.toDataURL("image/png"),
+      frameRect: () => { const r = $("frame").getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height }; },
+      tl, render, // for inspection
+    };
+    window.CSReady = true;
+    return;
+  }
+
+  // --- live playback ---
+  let playing = !matchMedia("(prefers-reduced-motion: reduce)").matches, last = performance.now(), needs = true;
+  const fpsBuf = [];
+  const list = $("steps");
+  story.steps.forEach((s, i) => {
+    const li = document.createElement("li"), b = document.createElement("button");
+    b.type = "button"; b.textContent = `${i}  ${s.stage}`; b.addEventListener("click", () => { tl.seek(i); needs = true; });
+    li.appendChild(b); list.appendChild(li);
+  });
+  const setPlay = (p) => { playing = p; $("play").textContent = p ? "Pause" : "Play"; };
+  $("play").addEventListener("click", () => { if (tl.done) tl.seek(0); setPlay(!playing); });
+  $("fwd").addEventListener("click", () => { tl.seek(tl.k + 1); needs = true; });
+  $("back").addEventListener("click", () => { tl.seek(tl.inStep > 0.5 ? tl.k : tl.k - 1); needs = true; });
+  $("replay").addEventListener("click", () => { tl.seek(0); setPlay(true); });
+
+  function tick(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if (playing && !tl.done) { tl.advance(dt); needs = true; }
+    else if (tl.busy()) { tl.advance(0); needs = true; }
+    if (tl.done && playing) setPlay(false);
+    if (needs) {
+      render(); needs = false;
+      fpsBuf.push(now); while (fpsBuf.length && now - fpsBuf[0] > 1000) fpsBuf.shift();
+      const st = tl.status();
+      $("stageName").textContent = `${st.k}  ${st.stage}`;
+      $("phase").textContent = `${st.done ? "done" : st.phase === "hold" ? "holding" : st.sub}  ·  ${fpsBuf.length} fps`;
+      list.querySelectorAll("button").forEach((b, i) => { if (i === st.k) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); });
+    }
+    requestAnimationFrame(tick);
+  }
+  window.CS = { tl, render, field, zoom, panels, drawCallouts, parkLayer, placeLayer }; // for inspection in the console
+  requestAnimationFrame(tick);
+}
+
+boot().catch((e) => { $("loading").textContent = `Could not load: ${e.message}. Serve this folder over http.`; console.error(e); });
+</script>
+</body>
+</html>
